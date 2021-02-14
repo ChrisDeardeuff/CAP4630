@@ -1,7 +1,7 @@
 /*From the Deitel and Deitel java textbook*/
 
-import java.awt.Graphics;
-import java.awt.Polygon;
+import java.awt.*;
+import java.awt.geom.Line2D;
 import java.util.ArrayList;
 
 import javax.swing.JFrame;
@@ -12,31 +12,33 @@ import static java.lang.Math.sin;
 
 public class Main extends JPanel
 {
-    static public ArrayList<Polygon> arrayOfPolygons;
+
     static public ArrayList<Node> arrayOfNodes = new ArrayList<>();
+    //create polygons
+    static PolygonsJPanel polygonsJPanel = new PolygonsJPanel();
 
     public static void main( String args[] )
     {
 
-        JFrame frame = new JFrame( "Drawing Polygons" );
+        JFrame frame = new JFrame( "Drawing Polygons");
         frame.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
-
-        //create polygons
-        PolygonsJPanel polygonsJPanel = new PolygonsJPanel();
-        arrayOfPolygons = polygonsJPanel.arrayOfPolygons;
 
         //arrayOfNodes.add(new Node())
         getValidPaths();
 
+
         frame.add( polygonsJPanel );
+        //frame.add(new Line());
         frame.setSize( 1000, 500 ); // set frame size
+        frame.setResizable(false);
         frame.setVisible( true ); // display frame
 
     }
 
     static public void getValidPaths(){
 
-        for (Polygon p: arrayOfPolygons) {
+        //get every vertex from polygons
+        for (Polygon p: polygonsJPanel.arrayOfPolygons) {
             int x;
             int y;
 
@@ -46,78 +48,75 @@ public class Main extends JPanel
                 arrayOfNodes.add(new Node(x,y));
             }
         }
-    }
-}
+        //draw lines between every possible node that can be reached
+        for(int i = 0; i < arrayOfNodes.size(); i++){
 
-// draw polygons and polylines
-class PolygonsJPanel extends JPanel{
+            Node n = arrayOfNodes.get(i);
+            int x1 = n.x;
+            int y1 = n.y;
 
-    public ArrayList<Polygon> arrayOfPolygons = new ArrayList<>();
+            for(int ii = 0; ii < arrayOfNodes.size(); ii++){
 
-    //n is number of sides of regular polygon, l is side length
-    //x0 is x-coordinate of center, y0 is y-coordinate of center
-    //tilt is clockwise tilt of polygon from positive y axis in degrees
-    void polygonInitiate(Polygon polygon, int n, int l, int x0, int y0, double tilt) {
+                if(ii == i){
+                    continue;
+                }
+                Node n2 = arrayOfNodes.get(ii);
+                int x2 = n2.x;
+                int y2 = n2.y;
 
-        double theta = 2 * Math.PI / n;
-        tilt = tilt * Math.PI / 180;
-        double r = 0.5 * l / cos(theta/2); //outer radius of polygon
-        for(int i = 0; i < n; i++) {
-            int x = (int)(x0 - r*sin(i*theta - tilt));
-            int y = (int)(y0 + r*cos(i*theta - tilt));
-            polygon.addPoint(x,y);
+                double slope = getSlope(x1,y1,x2,y2);
+
+                if(!intersects(x1,x2,y1,y2,slope)){
+                    n.neighbors.put(n2,distance(x1,y1,x2,y2));
+                    polygonsJPanel.arrayOfLines.add(n.getLine(n2));
+                }
+
+            }
         }
     }
+    static boolean intersects(Polygon p, Line2D l){
 
-    public void paintComponent( Graphics g )
-    {
-        super.paintComponent(g); // call superclass's paintComponent
+        for (int i = 0; i < p.npoints; i++) {
+            int next = (i+1)%p.npoints;
 
-        //START
-        Polygon start = new Polygon();
-        polygonInitiate(start,30,5,50,250,0);
-        g.fillPolygon(start);
+            if((l.getX1() == p.xpoints[i] && l.getY1() == p.ypoints[i] ) || (l.getX1() == p.xpoints[next] && l.getY1() == p.ypoints[next])
+            ||(l.getX2() == p.xpoints[i] && l.getY2() == p.ypoints[i] ) || (l.getX2() == p.xpoints[next] && l.getY2() == p.ypoints[next])){
+                continue;
+            }
 
-        Polygon poly1 = new Polygon();
-        polygonInitiate(poly1,4,100,150,100,45);
-        g.fillPolygon(poly1);
-        arrayOfPolygons.add(poly1);
+            Line2D edge = new Line2D.Double(p.xpoints[i],p.ypoints[i],p.xpoints[next],p.ypoints[next]);
 
-        Polygon poly2 = new Polygon();
-        polygonInitiate(poly2,5,150,175,300,180);
-        g.fillPolygon(poly2);
-        arrayOfPolygons.add(poly2);
+            if(edge.intersectsLine(l)){
+                return true;
+            }
+        }
 
-        Polygon poly3 = new Polygon();
-        polygonInitiate(poly3,8,100,400,100,20);
-        g.fillPolygon(poly3);
-        arrayOfPolygons.add(poly3);
+        return false;
+    }
 
-        Polygon poly4 = new Polygon();
-        polygonInitiate(poly4,3,150,500,248,45);
-        g.fillPolygon(poly4);
-        arrayOfPolygons.add(poly4);
+    static boolean intersects(int x1, int x2, int y1, int y2, double slope){
 
-        Polygon poly5 = new Polygon();
-        polygonInitiate(poly5,4,50,300,168,33);
-        g.fillPolygon(poly5);
-        arrayOfPolygons.add(poly5);
+        for (Polygon p: polygonsJPanel.arrayOfPolygons) {
+            if(intersects(p, new Line2D.Double(x1,y1,x2,y2))){
+                return true;
+            }
+        }
+        return false;
+    }
 
-        Polygon poly6 = new Polygon();
-        polygonInitiate(poly6,7,200,800,175,45);
-        g.fillPolygon(poly6);
-        arrayOfPolygons.add(poly6);
-
-        Polygon poly7 = new Polygon();
-        polygonInitiate(poly7,10,100,800,399,0);
-        g.fillPolygon(poly7);
-        arrayOfPolygons.add(poly7);
-
-        //END
-        Polygon end = new Polygon();
-        polygonInitiate(end,30,5,950,250,0);
-        g.fillPolygon(end);
+    static double distance(int x1, int y1, int x2, int y2) {
+        return Math.pow(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2), 0.5);
+    }
 
 
-    } // end method paintComponent
-} // end class PolygonsJPanel
+
+    static double getSlope(int x1, int y1, int x2, int y2){
+
+        return (double)(y2-y1)/(double)(x2-x1);
+    }
+
+    static double getLine(int x1, int y1, int x, double m){
+
+        return y1 - (m * (x-x1));
+    }
+}
