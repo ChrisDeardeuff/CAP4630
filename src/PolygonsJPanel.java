@@ -69,13 +69,15 @@ public class PolygonsJPanel extends JPanel {
         //END
         end = new Polygon();
         polygonInitiate(end,30,5,950,250,0);
+
+        this.setBackground(Color.BLACK);
     }
 
     public void paintComponent( Graphics g )
     {
         super.paintComponent(g); // call superclass's paintComponent
 
-        g.setColor(Color.orange);
+        g.setColor(Color.GRAY);
         for (Polygon p :arrayOfPolygons) {
             g.fillPolygon(p);
         }
@@ -84,6 +86,7 @@ public class PolygonsJPanel extends JPanel {
         g.fillPolygon(end);
 
         g.setColor(Color.GREEN);
+
         for (Line l: arrayOfLines) {
             g.drawLine(l.x1, l.y1, l.x2, l.y2);
         }

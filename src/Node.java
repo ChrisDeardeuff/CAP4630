@@ -1,3 +1,5 @@
+import java.awt.*;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Node {
@@ -6,13 +8,19 @@ public class Node {
     public int name;
     public int x;
     public int y;
-    HashMap<Node, Double> neighbors;
 
-    public Node(int x,int y){
+    int g;
+    int h;
+
+    ArrayList<Node> neighbors;
+    Polygon parentP;
+
+    public Node(int x,int y,Polygon p){
         this.x = x;
         this.y = y;
-        neighbors = new HashMap<>();
-        name = counter++;
+        neighbors = new ArrayList<>();
+        name = ++counter;
+        parentP = p;
     }
 
     public Line getLine(Node n){
