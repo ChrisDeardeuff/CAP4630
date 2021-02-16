@@ -36,10 +36,12 @@ public class AStar {
             //find cheapest node
 
             double mincost = 9999999;
-            h = Main.distance(cn.x,cn.y,950,250);
+
 
             for (Node n: pq) {
-               double cost = cf(g + Main.distance(n.x,n.y,cn.x,cn.y), h);
+                h = Main.distance(n.x,n.y,950,250);
+                double cost = cf(g + Main.distance(n.x,n.y,cn.x,cn.y), h);
+
                 if(cost < mincost){
                     mincost = cost;
                     minNode = n;

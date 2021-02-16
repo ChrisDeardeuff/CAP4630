@@ -21,7 +21,7 @@ public class Main extends JPanel
         getValidPaths();
 
 
-        /*System.out.println("Starting A*");
+        System.out.println("Starting A*");
         AStar a = new AStar(arrayOfNodes);
         ArrayList<pathObject> path = a.runSearch();
 
@@ -33,7 +33,7 @@ public class Main extends JPanel
 
             polygonsJPanel.arrayOfLines.add(previousNode.getLine(currentNode));
 
-        }*/
+        }
 
 
         frame.add( polygonsJPanel );
@@ -68,7 +68,7 @@ public class Main extends JPanel
             Node n2 = nodeSomething.get(p.npoints-1);
 
             n.neighbors.add(n2);
-            polygonsJPanel.arrayOfLines.add(n.getLine(n2));
+            //polygonsJPanel.arrayOfLines.add(n.getLine(n2));
             n2.neighbors.add(n);
 
             for (int i = 1; i < p.npoints; i++) {
@@ -77,7 +77,7 @@ public class Main extends JPanel
 
                 n2.neighbors.add(n);
                 n.neighbors.add(n2);
-                polygonsJPanel.arrayOfLines.add(n.getLine(n2));
+                //polygonsJPanel.arrayOfLines.add(n.getLine(n2));
             }
         }
 
@@ -105,7 +105,7 @@ public class Main extends JPanel
 
                 if(!intersects(x1,x2,y1,y2,slope)){
                     n.neighbors.add(n2);
-                    polygonsJPanel.arrayOfLines.add(n.getLine(n2));
+                    //polygonsJPanel.arrayOfLines.add(n.getLine(n2));
                 }
 
             }
