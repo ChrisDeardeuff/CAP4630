@@ -9,7 +9,7 @@ public class Node {
     public int x;
     public int y;
 
-    int g;
+    double g;
     int h;
 
     ArrayList<Node> neighbors;
@@ -21,6 +21,7 @@ public class Node {
         neighbors = new ArrayList<>();
         name = ++counter;
         parentP = p;
+
     }
 
     public Line getLine(Node n){

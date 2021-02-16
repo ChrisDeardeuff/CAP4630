@@ -23,13 +23,13 @@ public class Main extends JPanel
 
         System.out.println("Starting A*");
         AStar a = new AStar(arrayOfNodes);
-        ArrayList<pathObject> path = a.runSearch();
+        ArrayList<Node> path = a.runSearch();
 
 
         for (int i = 1; i < path.size(); i++) {
 
-            Node previousNode = path.get(i- 1).n;
-            Node currentNode = path.get(i).n;
+            Node previousNode = path.get(i- 1);
+            Node currentNode = path.get(i);
 
             polygonsJPanel.arrayOfLines.add(previousNode.getLine(currentNode));
 

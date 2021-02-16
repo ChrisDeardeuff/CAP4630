@@ -49,12 +49,12 @@ public class PolygonsJPanel extends JPanel {
 
 
         Polygon poly4 = new Polygon();
-        polygonInitiate(poly4,3,150,500,248,45);
+        polygonInitiate(poly4,3,150,500,275,45);
         arrayOfPolygons.add(poly4);
 
 
         Polygon poly5 = new Polygon();
-        polygonInitiate(poly5,4,50,300,168,33);
+        polygonInitiate(poly5,9,80,300,180,33);
         arrayOfPolygons.add(poly5);
 
 
