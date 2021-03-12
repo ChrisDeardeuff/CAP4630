@@ -1,6 +1,7 @@
 import java.awt.*;
 import java.awt.geom.Line2D;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -8,48 +9,67 @@ import javax.swing.JPanel;
 public class Main extends JPanel
 {
 
-    static public ArrayList<Node> arrayOfNodes = new ArrayList<>();
+    static public ArrayList<Node> arrayOfNodes;
     //create polygons
-    static PolygonsJPanel polygonsJPanel = new PolygonsJPanel();
+    static Environment polygonsJPanel;
 
     public static void main( String args[] )
     {
 
-        JFrame frame = new JFrame( "Drawing Polygons");
-        frame.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
+
         //arrayOfNodes.add(new Node())
-        getValidPaths();
+        JFrame frame = new JFrame( "A* search algorithm");;
+        Scanner s = new Scanner(System.in);
+        int eOption;
+        double cCost;
+
+        while(true){
 
 
-        System.out.println("Starting A*");
-        AStar a = new AStar(arrayOfNodes);
-        ArrayList<Node> path = a.runSearch();
 
+            System.out.println("Please Enter an Environment (1 or 2) or 0 to quit");
+            eOption = s.nextInt();
 
-        for (int i = 1; i < path.size(); i++) {
+            if(eOption == 0){
+                return;
+            }
 
-            Node previousNode = path.get(i- 1);
-            Node currentNode = path.get(i);
+            System.out.println("Please Enter a Cost");
+            //cCost = s.nextInt();
+            frame.dispose();
 
-            polygonsJPanel.arrayOfLines.add(previousNode.getLine(currentNode));
+            frame = new JFrame( "A* search algorithm");
+            frame.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
+            arrayOfNodes = new ArrayList<>();
+            polygonsJPanel = new Environment(eOption);
+            getValidPaths();
+            System.out.println("Starting Search");
 
+            AStar a = new AStar(arrayOfNodes);
+            ArrayList<Node> path = a.runSearch();
+
+            for (int i = 1; i < path.size(); i++) {
+
+                Node previousNode = path.get(i- 1);
+                Node currentNode = path.get(i);
+
+                polygonsJPanel.arrayOfLines.add(previousNode.getLine(currentNode));
+            }
+
+            frame.add( polygonsJPanel );
+            //frame.add(new Line());
+            frame.setSize( 768, 360 ); // set frame size
+            frame.setResizable(false);
+            frame.setVisible( true ); // display frame
         }
-
-
-        frame.add( polygonsJPanel );
-        //frame.add(new Line());
-        frame.setSize( 1000, 500 ); // set frame size
-        frame.setResizable(false);
-        frame.setVisible( true ); // display frame
 
     }
 
     static public void getValidPaths(){
-        Node s = new Node(50,250,null);
-        Node e = new Node(950,250,null);
 
-        arrayOfNodes.add(s);
-        arrayOfNodes.add(e);
+
+        arrayOfNodes.add(polygonsJPanel.s);
+        arrayOfNodes.add(polygonsJPanel.e);
 
         //get every vertex from polygons
         for (Polygon p: polygonsJPanel.arrayOfPolygons) {
