@@ -15,19 +15,19 @@ public class Environment extends JPanel {
     public Environment(int en){
         arrayOfLines = new ArrayList<>();
         arrayOfPolygons = new ArrayList<>();
-        if(en == 2){
 
-            initA();
-            s = new Node(30,164,null);
-            e = new Node(723,150,null);
-
-        }else if (en == 1){
-
-            initB();
-            s = new Node(123,265,null);
-            e = new Node(641,24,null);
+        switch (en) {
+            case 1 -> {
+                initB();
+                s = new Node(123, 265, null);
+                e = new Node(641, 24, null);
+            }
+            case 2 -> {
+                initA();
+                s = new Node(30, 164, null);
+                e = new Node(723, 150, null);
+            }
         }
-
     }
 
     //n is number of sides of regular polygon, l is side length
