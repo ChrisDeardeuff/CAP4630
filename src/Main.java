@@ -28,7 +28,7 @@ public class Main extends JPanel
             System.out.println("Please Enter an Environment (1 or 2) or 0 to quit");
             eOption = s.nextInt();
 
-            System.out.println(eOption);
+            //System.out.println(eOption);
 
             if(eOption == 0){
                 System.exit(0);
@@ -58,6 +58,8 @@ public class Main extends JPanel
 
                     polygonsJPanel.arrayOfLines.add(previousNode.getLine(currentNode));
                 }
+            }else{
+                System.out.println("NO PATH FOUND");
             }
 
             frame.add( polygonsJPanel );

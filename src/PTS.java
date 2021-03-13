@@ -74,7 +74,21 @@ class PTSPathObject {
     public void Actions(ArrayList<PTSPathObject> possiblePaths, Node goal){
 
         possiblePaths.remove(this);
+
         for (Node n: n.neighbors) {
+
+            boolean expanded = false;
+
+            for (PTSPathObject p: possiblePaths) {
+                if(p.n.equals(n)){
+                    expanded = true;
+                    break;
+                }
+            }
+
+            if(expanded){
+                continue;
+            }
 
             if(this.g + Main.distance(this.n.x,this.n.y,n.x,n.y) + this.g + Main.distance(this.n.x,this.n.y,n.x,n.y) > PTS.c ){
                 continue;
