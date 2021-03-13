@@ -3,75 +3,83 @@ import java.util.ArrayList;
 public class PTS {
 
         ArrayList<Node> arrayOfNodes;
-        double c;
+
+        static double c;
+
         public PTS(ArrayList<Node> arrayOfNodes, double c) {
+
             this.arrayOfNodes = arrayOfNodes;
-            this.c = c;
+            PTS.c = c;
+
         }
 
-        public ArrayList<Node> runSearch(){
+        public ArrayList<Node> runSearch() {
 
-            ArrayList<pathObject> pq = new ArrayList<>();
+            ArrayList<PTSPathObject> open = new ArrayList<>();
 
             Node s = arrayOfNodes.get(0);
             Node e = arrayOfNodes.get(1);
 
-            pq.add(new pathObject(Main.distance(s.x,s.y,e.x,e.y),0,s));
-            pathObject minNode = null;
+            open.add(new PTSPathObject(Main.distance(s.x,s.y,e.x,e.y),0,s));
 
-            while(!pq.isEmpty()){
+            while(open.size() > 0){
 
-                //find cheapest node
-                double mincost = Double.MAX_VALUE;
-                for (pathObject po: pq) {
+                double maxCost = Double.MIN_VALUE;
+                PTSPathObject pts = null;
 
-                    if(po.cost < mincost){
-                        mincost = po.cost;
-                        minNode = po;
+                for (PTSPathObject n:open) {
+
+                    if(n.ptsCost > maxCost && n.ptsCost >= 0){
+                        pts = n;
+                        maxCost = pts.ptsCost;
                     }
                 }
 
-                if(minNode.n == e){
-                    return minNode.path;
+                if(pts == null){
+                    return null;
                 }
 
-                minNode.Actions(pq,e);
-            }
+                if(pts.n == e){
+                    return pts.path;
+                }
 
+                pts.Actions(open,e);
+
+            }
             return null;
         }
 
-        public double cf(double g,double h){
-            return g + h;
-        }
-
-
     }
-    class pathObject{
+class PTSPathObject {
+    double ptsCost;
+    double cost;
+    double g;
+    Node n;
 
-        double cost;
-        double g;
-        Node n;
+    ArrayList<Node> path;
 
-        ArrayList<Node> path;
+    private PTSPathObject(double cost, double g, Node n, ArrayList<Node> path){
+        this.ptsCost = (PTS.c + g) / cost;
+        this.cost = cost+g;
+        this.n = n;
+        this.g = g;
+        this.path = path;
+        path.add(this.n);
+    }
 
-        private pathObject(double cost, double g, Node n, ArrayList<Node> path){
-            this.cost = cost+g;
-            this.n = n;
-            this.g = g;
-            this.path = path;
-            path.add(this.n);
-        }
-        public pathObject(double cost, double g, Node n){
-            this(cost,g,n,new ArrayList<Node>());
-        }
-        public void Actions(ArrayList<pathObject> possiblePaths, Node goal){
+    public PTSPathObject(double cost, double g, Node n){
+        this(cost,g,n,new ArrayList<Node>());
+    }
 
-            possiblePaths.remove(this);
-            for (Node n: n.neighbors) {
+    public void Actions(ArrayList<PTSPathObject> possiblePaths, Node goal){
 
-                possiblePaths.add(new pathObject(Main.distance(n.x,n.y,goal.x,goal.y),this.g+ Main.distance(this.n.x,this.n.y,n.x,n.y),n,(ArrayList<Node>) path.clone()));
+        possiblePaths.remove(this);
+        for (Node n: n.neighbors) {
+
+            if(this.g + Main.distance(this.n.x,this.n.y,n.x,n.y) + this.g + Main.distance(this.n.x,this.n.y,n.x,n.y) > PTS.c ){
+                continue;
             }
+            possiblePaths.add(new PTSPathObject(Main.distance(n.x,n.y,goal.x,goal.y),this.g+ Main.distance(this.n.x,this.n.y,n.x,n.y),n,(ArrayList<Node>) path.clone()));
 
         }
 

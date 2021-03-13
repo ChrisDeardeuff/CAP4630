@@ -10,19 +10,19 @@ public class AStar {
 
     public ArrayList<Node> runSearch(){
 
-        ArrayList<pathObject> pq = new ArrayList<>();
+        ArrayList<PathObject> pq = new ArrayList<>();
 
         Node s = arrayOfNodes.get(0);
         Node e = arrayOfNodes.get(1);
 
-        pq.add(new pathObject(Main.distance(s.x,s.y,e.x,e.y),0,s));
-        pathObject minNode = null;
+        pq.add(new PathObject(Main.distance(s.x,s.y,e.x,e.y),0,s));
+        PathObject minNode = null;
 
         while(!pq.isEmpty()){
 
             //find cheapest node
             double mincost = Double.MAX_VALUE;
-            for (pathObject po: pq) {
+            for (PathObject po: pq) {
 
                 if(po.cost < mincost){
                     mincost = po.cost;
@@ -40,13 +40,8 @@ public class AStar {
         return null;
     }
 
-    public double cf(double g,double h){
-        return g + h;
-    }
-
-
 }
-class pathObject{
+class PathObject {
 
     double cost;
     double g;
@@ -54,22 +49,24 @@ class pathObject{
 
     ArrayList<Node> path;
 
-    private pathObject(double cost, double g, Node n, ArrayList<Node> path){
+    private PathObject(double cost, double g, Node n, ArrayList<Node> path){
         this.cost = cost+g;
         this.n = n;
         this.g = g;
         this.path = path;
         path.add(this.n);
     }
-    public pathObject(double cost, double g, Node n){
+
+    public PathObject(double cost, double g, Node n){
         this(cost,g,n,new ArrayList<Node>());
     }
-    public void Actions(ArrayList<pathObject> possiblePaths,Node goal){
+
+    public void Actions(ArrayList<PathObject> possiblePaths, Node goal){
 
         possiblePaths.remove(this);
         for (Node n: n.neighbors) {
 
-            possiblePaths.add(new pathObject(Main.distance(n.x,n.y,goal.x,goal.y),this.g+ Main.distance(this.n.x,this.n.y,n.x,n.y),n,(ArrayList<Node>) path.clone()));
+            possiblePaths.add(new PathObject(Main.distance(n.x,n.y,goal.x,goal.y),this.g+ Main.distance(this.n.x,this.n.y,n.x,n.y),n,(ArrayList<Node>) path.clone()));
         }
 
     }

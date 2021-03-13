@@ -25,17 +25,17 @@ public class Main extends JPanel
 
         while(true){
 
-
-
             System.out.println("Please Enter an Environment (1 or 2) or 0 to quit");
             eOption = s.nextInt();
 
+            System.out.println(eOption);
+
             if(eOption == 0){
-                return;
+                System.exit(0);
             }
 
             System.out.println("Please Enter a Cost");
-            //cCost = s.nextInt();
+            cCost = s.nextDouble();
             frame.dispose();
 
             frame = new JFrame( "A* search algorithm");
@@ -43,17 +43,21 @@ public class Main extends JPanel
             arrayOfNodes = new ArrayList<>();
             polygonsJPanel = new Environment(eOption);
             getValidPaths();
+
             System.out.println("Starting Search");
 
-            AStar a = new AStar(arrayOfNodes);
+            PTS a = new PTS(arrayOfNodes, cCost);
             ArrayList<Node> path = a.runSearch();
 
-            for (int i = 1; i < path.size(); i++) {
+            if(path != null) {
 
-                Node previousNode = path.get(i- 1);
-                Node currentNode = path.get(i);
+                for (int i = 1; i < path.size(); i++) {
 
-                polygonsJPanel.arrayOfLines.add(previousNode.getLine(currentNode));
+                    Node previousNode = path.get(i - 1);
+                    Node currentNode = path.get(i);
+
+                    polygonsJPanel.arrayOfLines.add(previousNode.getLine(currentNode));
+                }
             }
 
             frame.add( polygonsJPanel );
@@ -67,6 +71,7 @@ public class Main extends JPanel
 
     static public void getValidPaths(){
 
+        boolean debug = false;
 
         arrayOfNodes.add(polygonsJPanel.s);
         arrayOfNodes.add(polygonsJPanel.e);
@@ -88,7 +93,8 @@ public class Main extends JPanel
             Node n2 = nodeSomething.get(p.npoints-1);
 
             n.neighbors.add(n2);
-            //polygonsJPanel.arrayOfLines.add(n.getLine(n2));
+            if(debug)
+                polygonsJPanel.arrayOfLines.add(n.getLine(n2));
             n2.neighbors.add(n);
 
             for (int i = 1; i < p.npoints; i++) {
@@ -97,7 +103,9 @@ public class Main extends JPanel
 
                 n2.neighbors.add(n);
                 n.neighbors.add(n2);
-                //polygonsJPanel.arrayOfLines.add(n.getLine(n2));
+
+                if(debug)
+                    polygonsJPanel.arrayOfLines.add(n.getLine(n2));
             }
         }
 
@@ -125,7 +133,8 @@ public class Main extends JPanel
 
                 if(!intersects(x1,x2,y1,y2,slope)){
                     n.neighbors.add(n2);
-                    //polygonsJPanel.arrayOfLines.add(n.getLine(n2));
+                    if(debug)
+                        polygonsJPanel.arrayOfLines.add(n.getLine(n2));
                 }
 
             }
